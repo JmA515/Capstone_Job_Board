@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'corsheaders',
     'jobs.apps.JobsConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
