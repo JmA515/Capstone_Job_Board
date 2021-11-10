@@ -16,16 +16,25 @@ from authentication.serializers import RegistrationSerializer
 def profile(request):
     logged_in_user = request.user
     user_logged_in = User.objects.get(id=logged_in_user.id)
+    print(user_logged_in.first_name)
+    print(request.data)
+    print(request.data.get('email'))
 
     if request.method == "POST":
-        print(json.loads(request.body.decode('utf-8')))
-        body = json.loads(request.body.decode('utf-8'))
-        user_logged_in.first_name = body['first_name']
-        user_logged_in.last_name = body['last_name']
-        user_logged_in.address = body['address']
-        user_logged_in.zip_code = body['zip_code']
+        # print(json.loads(request.body.decode('utf-8')))
+        # body = json.loads(request.body.decode('utf-8'))
+        # user_logged_in.first_name = body['first_name']
+        # user_logged_in.last_name = body['last_name']
+        # user_logged_in.address = body['address']
+        # user_logged_in.zip_code = body['zip_code']
+        user_logged_in.email = request.data.get('email')
+        user_logged_in.first_name = request.data.get('first_name')
+        user_logged_in.last_name = request.data.get('last_name')
+        user_logged_in.address = request.data.get('address')
+        user_logged_in.zip_code = request.data.get('zip_code')
         user_logged_in.save()
         serializer = RegistrationSerializer(user_logged_in)
+        print(user_logged_in.email)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'GET':

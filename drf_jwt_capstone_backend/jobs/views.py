@@ -1,3 +1,4 @@
+from functools import partial
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
@@ -23,23 +24,47 @@ User = get_user_model()
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_jobs(request):
-    jobs = Job.objects.all()
+    # jobs = Job.objects.all()
+    jobs = Job.objects.filter(status='available')
     serializer = JobSerializer(jobs, many=True)
     return Response(serializer.data)
 
 @api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def user_jobs(request):
-
-    print('User', f"{request.user.id} {request.user.email} {request.user.username}")
+    logged_in_user = request.user
+    user_logged_in = User.objects.get(id=logged_in_user.id)
 
     if request.method == 'POST':
-        serializer = JobSerializer(data=request.data)
+        creator_id = user_logged_in
+        title = request.data.get('title')
+        description = request.data.get('description')
+        status = request.data.get('status')
+        post_date = request.data.get('post_date')
+        new_job = Job(job_creator=creator_id, title=title, description=description, status=status, post_date=post_date)
+        new_job.save()
+        serializer = JobSerializer(data=new_job)
         if serializer.is_valid():
             serializer.save(job_creator=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors)
     elif request.method == 'GET':
-        jobs = Job.objects.filter(job_creator_id=request.user.id)
-        serializer = JobSerializer(jobs, many=True)
-        return Response(serializer.data)
+        if request.GET.get('status') != None:
+            jobs = Job.objects.filter(status=request.GET.get('status'))
+            serializer = JobSerializer(jobs, many=True)
+            return Response(serializer.data)
+        else:
+            jobs = Job.objects.filter(job_creator_id=request.user.id)
+            serializer = JobSerializer(jobs, many=True)
+            return Response(serializer.data)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def accept_user_job(request, job_pk):
+    job = Job.objects.get(id = job_pk)
+    updated_job = JobSerializer(job, data=request.data, partial=True)
+    if updated_job.is_valid():
+        updated_job.save()
+        return Response(updated_job.data)
+    else:
+        return Response(updated_job.errors)
