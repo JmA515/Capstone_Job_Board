@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 import json
 from authentication.serializers import RegistrationSerializer
+from ratings.models import Rating
 
 
 # Create your views here.
@@ -40,3 +41,26 @@ def profile(request):
     elif request.method == 'GET':
         serializer = RegistrationSerializer(user_logged_in)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['PATCH', 'GET'])
+@permission_classes([IsAuthenticated])
+def rate_user(request, user_pk):
+    user = User.objects.get(id = user_pk)
+    if request.method == 'GET':
+        serializer = RegistrationSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'PATCH':
+        updated_user = RegistrationSerializer(user, data=request.data, partial=True)
+        if updated_user.is_valid():
+            updated_user.save()
+            return Response(updated_user.data)
+        else:
+            return Response(updated_user.errors)
+    
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def get_user_rating(request, user_pk):
+#     user = Rating.objects.get(id = user_pk)
+#     if request.method == 'GET':
+#         serializer = RegistrationSerializer(user)
+#         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -24,8 +24,8 @@ User = get_user_model()
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_jobs(request):
-    # jobs = Job.objects.all()
-    jobs = Job.objects.filter(status='available')
+    jobs = Job.objects.all()
+    # jobs = Job.objects.filter(status='available')
     serializer = JobSerializer(jobs, many=True)
     return Response(serializer.data)
 
