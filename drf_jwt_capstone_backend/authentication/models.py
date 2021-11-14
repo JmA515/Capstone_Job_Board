@@ -12,6 +12,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     middle_name = models.CharField(max_length=20, null=True, blank=True)
-    address = models.CharField(max_length=50)
-    zip_code = models.CharField(max_length=5)
+    address = models.CharField(max_length=150, null=True, blank=True)
+    zip_code = models.CharField(max_length=5, null=True, blank=True)
     job_satisfaction_rating = models.IntegerField(null=True, blank=True)
+    lat_lng = models.CharField(max_length=100, null=True, blank=True)

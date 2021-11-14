@@ -41,7 +41,8 @@ def user_jobs(request):
         description = request.data.get('description')
         status = request.data.get('status')
         post_date = request.data.get('post_date')
-        new_job = Job(job_creator=creator_id, title=title, description=description, status=status, post_date=post_date)
+        lat_lng = user_logged_in.lat_lng
+        new_job = Job(job_creator=creator_id, title=title, description=description, status=status, post_date=post_date, lat_lng=lat_lng)
         new_job.save()
         serializer = JobSerializer(data=new_job)
         if serializer.is_valid():

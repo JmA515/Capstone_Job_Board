@@ -10,3 +10,4 @@ class Job(models.Model):
     description = models.CharField(max_length=200)
     status = models.CharField(max_length=9) 
     post_date = models.DateField()
+    lat_lng = models.CharField(max_length=100, null=True, blank=True)

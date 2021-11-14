@@ -33,6 +33,7 @@ def profile(request):
         user_logged_in.last_name = request.data.get('last_name')
         user_logged_in.address = request.data.get('address')
         user_logged_in.zip_code = request.data.get('zip_code')
+        user_logged_in.lat_lng = request.data.get('lat_lng')
         user_logged_in.save()
         serializer = RegistrationSerializer(user_logged_in)
         print(user_logged_in.email)
