@@ -45,6 +45,12 @@ INSTALLED_APPS = [
     'ratings.apps.RatingsConfig',
 ]
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'andybobandy6@gmail.com'
+EMAIL_HOST_PASSWORD = 'Password2021'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
